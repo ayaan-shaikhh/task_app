@@ -13,8 +13,8 @@
 //   Task(title: 'Reply to emails', completed: true),
 // ];
 
-import '../models/task.dart';
-import '../models/habit_task.dart';
+import '../core/models/task.dart';
+import '../core/models/habit_task.dart';
 
 // Temporary in-memory sample data.
 final List<Task> sampleTasks = [

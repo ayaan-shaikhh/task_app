@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import 'pages/app_shell.dart';
+import 'app/app_shell.dart';
 
-import 'theme/app_theme3.dart';
-import 'providers/theme_provider.dart';
+import 'core/theme/app_theme3.dart';
+import 'core/providers/theme_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
