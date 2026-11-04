@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/habit_task.dart';
 // import '../theme/app_theme.dart';
-import '../../habits/widgets/habit_row.dart';
+import 'habit_row.dart';
 
 import '../../../core/stores/habit_store.dart';
+
+import '../pages/habit_list_page.dart';
 
 class HabitSectionCard extends StatelessWidget {
   const HabitSectionCard({
@@ -17,7 +19,7 @@ class HabitSectionCard extends StatelessWidget {
     required this.tint,
     required this.border,
     required this.habits,
-    required this.onOpen,
+    // required this.onOpen,
     required this.onToggle,
     required this.habitstore,
   });
@@ -30,7 +32,7 @@ class HabitSectionCard extends StatelessWidget {
   final Color tint;
   final Color border;
   final List<HabitTask> habits;
-  final VoidCallback onOpen;
+  // final VoidCallback onOpen;
   final HabitStore habitstore;
   final void Function(String id) onToggle;
 
@@ -41,6 +43,14 @@ class HabitSectionCard extends StatelessWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
     final preview = habits.toList();
+
+    void _openhabit(BuildContext context, String title) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => HabitListPage(title: title, store: habitstore),
+      ),
+    );
+  }
 
     return Material(
       color: tint,
@@ -56,7 +66,7 @@ class HabitSectionCard extends StatelessWidget {
         children: [
           // Header
           InkWell(
-            onTap: onOpen,
+            onTap: () => _openhabit(context, title),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Row(
@@ -128,11 +138,11 @@ class HabitSectionCard extends StatelessWidget {
 
           // View all
           InkWell(
-            onTap: onOpen,
+            onTap: () => _openhabit(context, title),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
               child: Text(
-                'View all (${habits.length})',
+                'View all (${habitstore.habits.length})',
                 style: TextStyle(
                   color: accentText,
                   fontWeight: FontWeight.w600,

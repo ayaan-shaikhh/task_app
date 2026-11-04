@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/stores/task_store.dart';
 import '../../../core/stores/habit_store.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../home/widgets/section_card.dart';
-import '../../home/widgets/habit_section_card.dart';
+import '../../tasks/widgets/section_card.dart';
+import '../../habits/widgets/habit_section_card.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({
@@ -474,7 +474,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     .toList();
                 return SectionCard(
                   title: 'Tasks',
-                  subtitle: 'Scheduled for $dateLabel',
+                  subtitle: dateLabel,
                   icon: Icons.flag_rounded,
                   accent: customColors.warningText,
                   accentText: customColors.warningText,
@@ -493,7 +493,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 final habits = widget.habitstore.todayhabits;
                 return HabitSectionCard(
                   title: 'Habits',
-                  subtitle: 'Consistent tracker for $dateLabel',
+                  subtitle: dateLabel,
                   icon: Icons.check_rounded,
                   accent: customColors.successText,
                   accentText: customColors.successText,
@@ -502,7 +502,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   onToggle: widget.habitstore.toggle,
                   habits: habits,
                   habitstore: widget.habitstore,
-                  onOpen: () {},
+                  // onOpen: () {},
                 );
               },
             ),

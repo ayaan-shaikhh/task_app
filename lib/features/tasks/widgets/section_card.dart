@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/task.dart';
 // import '../theme/app_theme.dart';
-import '../../tasks/widgets/task_row.dart';
+import 'task_row.dart';
 
 import '../../../core/stores/task_store.dart';
 
-import '../../tasks/pages/task_list_page.dart';
+import '../pages/task_list_page.dart';
 
 /// A tinted home-page card: icon badge + title + subtitle, a short preview of tasks,
 /// and a "View all" link. Tapping the header (or "View all") calls [onOpen].
@@ -95,7 +95,7 @@ class SectionCard extends StatelessWidget {
           Expanded(
             child: preview.isEmpty
                 ? Center(
-                    child: Text('Nothing here yet', style: TextStyle(color: colorScheme.onSurfaceVariant)),
+                    child: Text('No tasks for today', style: TextStyle(color: colorScheme.onSurfaceVariant)),
                   )
                 : ListView(
                     padding: const EdgeInsets.only(top: 4),
@@ -107,7 +107,7 @@ class SectionCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
               child: Text(
-                'View all (${tasks.length})',
+                'View all (${taskstore.tasks.length})',
                 style: TextStyle(color: accentText, fontWeight: FontWeight.w600),
               ),
             ),

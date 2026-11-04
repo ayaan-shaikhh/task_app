@@ -6,8 +6,8 @@ import '../../core/stores/habit_store.dart';
 // import '../theme/app_theme.dart';
 import '../../core/theme/app_colors.dart';
 
-import 'widgets/section_card.dart';
-import 'widgets/habit_section_card.dart';
+import '../tasks/widgets/section_card.dart';
+import '../habits/widgets/habit_section_card.dart';
 
 import '../tasks/pages/task_list_page.dart';
 import '../habits/pages/habit_list_page.dart';
@@ -172,7 +172,7 @@ class HomePage extends StatelessWidget {
                                 onToggle: habitstore.toggle,
                                 habits: habits,
                                 habitstore: habitstore,
-                                onOpen: () => openhabits(context, 'Habits'),
+                                // onOpen: () => openhabits(context, 'Habits'),
                               );
                             },
                           ),
