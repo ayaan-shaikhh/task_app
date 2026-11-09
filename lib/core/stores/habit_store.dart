@@ -28,20 +28,25 @@ class HabitStore extends ChangeNotifier {
     }
   }
 
-  /// Returns habits sorted by completion status and title.
+  /// All habits (not date-specific), sorted by title.
   List<HabitTask> get habits {
-    return _sorted(_habits);
+    final items = _habits.toList();
+    items.sort((a, b) => a.title.compareTo(b.title));
+    return items;
   }
 
-  List<HabitTask> get todayhabits{
-    final today = Weekday.values[DateTime.now().weekday - 1];
+  /// Habits scheduled on [date]: incomplete first, then completed, then A-Z.
+  List<HabitTask> habitsForDate(DateTime date) {
+    final day = Weekday.values[date.weekday - 1];
 
-    final todaysHabits = _habits.where((habit) {
-      return habit.frequency.contains(today);
+    final matching = _habits.where((habit) {
+      return habit.frequency.contains(day);
     });
 
-    return _sorted(todaysHabits);
+    return _sorted(matching, date);
   }
+
+  List<HabitTask> get todayhabits => habitsForDate(DateTime.now());
 
   /// Adds a new habit to SQLite.
   Future<void> add({required String title}) async {
@@ -68,32 +73,39 @@ class HabitStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Toggles completion and saves the change.
-  Future<void> toggle(String id) async {
-    final index = _habits.indexWhere((habit) => habit.id == id);
-
+  /// Toggles completion for a single date and saves the change.
+  Future<void> toggle(String id, DateTime date) async {
+    final index = _habits.indexWhere((h) => h.id == id);
     if (index == -1) return;
 
-    final updatedHabit = _habits[index].copyWith(
-      isCompleted: !_habits[index].isCompleted,
-    );
+    final habit = _habits[index];
+    final key = HabitTask.dateKey(date);
 
-    await _habitRepository.updateHabit(updatedHabit);
+    final updatedDates = {...habit.completedDates};
+    if (updatedDates.contains(key)) {
+      updatedDates.remove(key);
+    } else {
+      updatedDates.add(key);
+    }
 
-    _habits[index] = updatedHabit;
+    final newHabit = habit.copyWith(completedDates: updatedDates);
+
+    await _habitRepository.updateHabit(newHabit);
+
+    _habits[index] = newHabit;
     notifyListeners();
   }
 
   Future<void> updateHabit(HabitTask habit) async {
-  final index = _habits.indexWhere((item) => item.id == habit.id);
+    final index = _habits.indexWhere((item) => item.id == habit.id);
 
-  if (index == -1) return;
+    if (index == -1) return;
 
-  await _habitRepository.updateHabit(habit);
+    await _habitRepository.updateHabit(habit);
 
-  _habits[index] = habit;
-  notifyListeners();
-}
+    _habits[index] = habit;
+    notifyListeners();
+  }
 
   /// Deletes a habit from SQLite.
   Future<void> remove(String id) async {
@@ -107,13 +119,16 @@ class HabitStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<HabitTask> _sorted(Iterable<HabitTask> list) {
+  List<HabitTask> _sorted(Iterable<HabitTask> list, DateTime date) {
     final items = list.toList();
 
     items.sort((a, b) {
+      final aDone = a.isCompletedOn(date);
+      final bDone = b.isCompletedOn(date);
+
       // Incomplete habits come before completed habits.
-      if (a.isCompleted != b.isCompleted) {
-        return a.isCompleted ? 1 : -1;
+      if (aDone != bDone) {
+        return aDone ? 1 : -1;
       }
 
       // Sort alphabetically when completion status is the same.

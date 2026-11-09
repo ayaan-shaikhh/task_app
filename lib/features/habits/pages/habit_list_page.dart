@@ -28,11 +28,13 @@ class HabitListPage extends StatelessWidget {
       body: ListenableBuilder(
         listenable: store,
         builder: (context, _) {
-          final tasks = store.habits;
-          if (tasks.isEmpty) {
+          final habits = store.habits;
+          final today = DateTime.now();
+
+          if (habits.isEmpty) {
             return Center(
               child: Text(
-                'No tasks here yet',
+                'No habits here yet',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -41,13 +43,13 @@ class HabitListPage extends StatelessWidget {
           }
           return ListView.separated(
             padding: const EdgeInsets.all(16),
-            itemCount: tasks.length,
+            itemCount: habits.length,
             separatorBuilder: (_, __) => const SizedBox(height: 10),
             itemBuilder: (_, i) {
-              final habit = tasks[i];
+              final habit = habits[i];
               return Container(
                 decoration: BoxDecoration(
-                  color: habit.isCompleted
+                  color: habit.isCompletedOn(today)
                       ? customColors.successTint
                       : colorScheme.surface,
                   borderRadius: BorderRadius.circular(16),
@@ -56,9 +58,9 @@ class HabitListPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: HabitRow(
                   habit: habit,
+                  date: today,
                   habitstore: store,
-
-                  onToggle: () => store.toggle(habit.id),
+                  onToggle: () => store.toggle(habit.id, today),
                 ),
               );
             },

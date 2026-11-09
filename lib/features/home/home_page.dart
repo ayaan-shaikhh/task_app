@@ -69,7 +69,9 @@ class HomePage extends StatelessWidget {
                       ? Icons.nights_stay_rounded
                       : Icons.wb_sunny_rounded,
                   size: 40,
-                  color: isEvening ? colorScheme.primary : customColors.warningText,
+                  color: isEvening
+                      ? colorScheme.primary
+                      : customColors.warningText,
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -85,7 +87,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                       Text(
+                      Text(
                         'Small steps make big progress.',
                         style: TextStyle(color: colorScheme.onSurfaceVariant),
                       ),
@@ -95,7 +97,7 @@ class HomePage extends StatelessWidget {
                 IconButton(
                   tooltip: 'Profile',
                   onPressed: () {},
-                  icon:  Icon(
+                  icon: Icon(
                     Icons.account_circle_outlined,
                     size: 32,
                     color: colorScheme.primary,
@@ -169,10 +171,11 @@ class HomePage extends StatelessWidget {
                                 accentText: customColors.successText,
                                 tint: customColors.successTint,
                                 border: customColors.successBorder,
-                                onToggle: habitstore.toggle,
+                                onToggle: (id) =>
+                                    habitstore.toggle(id, DateTime.now()),
                                 habits: habits,
+                                date: DateTime.now(),
                                 habitstore: habitstore,
-                                // onOpen: () => openhabits(context, 'Habits'),
                               );
                             },
                           ),

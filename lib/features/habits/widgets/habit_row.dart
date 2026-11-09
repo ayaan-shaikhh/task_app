@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../core/stores/habit_store.dart';
 import '../../../core/models/habit_task.dart';
-// import '../theme/app_theme.dart';
 import '../pages/edit_habit_page.dart';
 
 import '../../../core/theme/app_colors.dart';
@@ -13,11 +11,16 @@ class HabitRow extends StatelessWidget {
   const HabitRow({
     super.key,
     required this.habit,
+    required this.date,
     required this.onToggle,
     required this.habitstore,
   });
 
   final HabitTask habit;
+
+  /// The day this row is being shown for (selected calendar day, or today).
+  final DateTime date;
+
   final VoidCallback onToggle;
   final HabitStore habitstore;
 
@@ -25,6 +28,9 @@ class HabitRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final customColors = Theme.of(context).extension<AppCustomColors>()!;
+
+    final isDone = habit.isCompletedOn(date);
+
     return InkWell(
       onTap: onToggle,
       child: Padding(
@@ -32,15 +38,11 @@ class HabitRow extends StatelessWidget {
         child: Row(
           children: [
             IconButton(
-              tooltip: habit.isCompleted
-                  ? 'Mark as not done'
-                  : 'Mark as done',
+              tooltip: isDone ? 'Mark as not done' : 'Mark as done',
               onPressed: onToggle,
               icon: Icon(
-                habit.isCompleted
-                    ? Icons.check_circle
-                    : Icons.radio_button_unchecked,
-                color: habit.isCompleted
+                isDone ? Icons.check_circle : Icons.radio_button_unchecked,
+                color: isDone
                     ? customColors.successText
                     : const Color(0xFFB6BDC8),
                 size: 26,
@@ -53,12 +55,10 @@ class HabitRow extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 15,
-                  color: habit.isCompleted
+                  color: isDone
                       ? colorScheme.onSurfaceVariant
                       : colorScheme.onSurface,
-                  decoration: habit.isCompleted
-                      ? TextDecoration.lineThrough
-                      : null,
+                  decoration: isDone ? TextDecoration.lineThrough : null,
                 ),
               ),
             ),

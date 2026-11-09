@@ -490,20 +490,20 @@ class _CalendarPageState extends State<CalendarPage> {
           : ListenableBuilder(
               listenable: widget.habitstore,
               builder: (context, _) {
-                final habits = widget.habitstore.todayhabits;
+                final habits = widget.habitstore.habitsForDate(_selectedDate);
                 return HabitSectionCard(
-                  title: 'Habits',
-                  subtitle: dateLabel,
-                  icon: Icons.check_rounded,
-                  accent: customColors.successText,
-                  accentText: customColors.successText,
-                  tint: customColors.successTint,
-                  border: customColors.successBorder,
-                  onToggle: widget.habitstore.toggle,
-                  habits: habits,
-                  habitstore: widget.habitstore,
-                  // onOpen: () {},
-                );
+  title: 'Habits',
+  subtitle: dateLabel,
+  icon: Icons.check_rounded,
+  accent: customColors.successText,
+  accentText: customColors.successText,
+  tint: customColors.successTint,
+  border: customColors.successBorder,
+  onToggle: (id) => widget.habitstore.toggle(id, _selectedDate),
+  habits: habits,
+  date: _selectedDate,
+  habitstore: widget.habitstore,
+);
               },
             ),
     );

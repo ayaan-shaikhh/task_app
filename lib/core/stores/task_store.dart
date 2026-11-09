@@ -99,4 +99,16 @@ Future<void> updateTask(Task task) async {
 
   notifyListeners();
 }
+
+  /// Deletes a task from SQLite and from the in-memory list.
+  Future<void> deleteTask(String id) async {
+    final index = _tasks.indexWhere((task) => task.id == id);
+
+    if (index == -1) return;
+
+    await _taskRepository.deleteTask(id);
+
+    _tasks.removeAt(index);
+    notifyListeners();
+  }
 }

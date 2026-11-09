@@ -67,7 +67,7 @@ class _AppShellState extends State<AppShell> {
           const SettingsPage(),
         ],
       ),
-      floatingActionButton: _index == 0
+      floatingActionButton: _index == 0 || _index == 1 
           ? FloatingActionButton(
               tooltip: 'Add task',
               onPressed: () {

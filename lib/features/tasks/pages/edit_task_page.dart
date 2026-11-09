@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../core/models/task.dart';
@@ -8,11 +7,7 @@ class EditTaskPage extends StatefulWidget {
   final Task task;
   final TaskStore taskstore;
 
-  const EditTaskPage({
-    super.key,
-    required this.task,
-    required this.taskstore,
-  });
+  const EditTaskPage({super.key, required this.task, required this.taskstore});
 
   @override
   State<EditTaskPage> createState() => _EditTaskPageState();
@@ -83,9 +78,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a task name.'),
-        ),
+        const SnackBar(content: Text('Please enter a task name.')),
       );
       return;
     }
@@ -112,12 +105,48 @@ class _EditTaskPageState extends State<EditTaskPage> {
     }
   }
 
+  Future<void> _deleteTask() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete task?'),
+        content: Text('"${widget.task.title}" will be permanently deleted.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await widget.taskstore.deleteTask(
+        widget.task.id,
+      ); // <- adjust to your store's method
+      if (!mounted) return;
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not delete task. Please try again.'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Task'),
-      ),
+      appBar: AppBar(title: const Text('Edit Task')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -126,10 +155,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
             children: [
               const Text(
                 'Task name',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
 
@@ -146,10 +172,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
               const Text(
                 'Deadline',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 12),
 
@@ -177,8 +200,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
                       onPressed: _pickTime,
                       icon: const Icon(Icons.access_time),
                       label: Text(
-                        TimeOfDay.fromDateTime(_selectedDeadline)
-                            .format(context),
+                        TimeOfDay.fromDateTime(
+                          _selectedDeadline,
+                        ).format(context),
                       ),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -205,6 +229,21 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Text('Cancel'),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              SizedBox(
+                width: double.infinity,
+                child: TextButton.icon(
+                  onPressed: _deleteTask,
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text('Delete Task'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.redAccent,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
                 ),
               ),
             ],

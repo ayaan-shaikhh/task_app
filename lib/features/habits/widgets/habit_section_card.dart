@@ -19,6 +19,7 @@ class HabitSectionCard extends StatelessWidget {
     required this.tint,
     required this.border,
     required this.habits,
+    required this.date,
     // required this.onOpen,
     required this.onToggle,
     required this.habitstore,
@@ -32,25 +33,26 @@ class HabitSectionCard extends StatelessWidget {
   final Color tint;
   final Color border;
   final List<HabitTask> habits;
+
+  /// The day these habits are shown for (selected calendar day, or today).
+  final DateTime date;
+
   // final VoidCallback onOpen;
   final HabitStore habitstore;
   final void Function(String id) onToggle;
 
-  
-
-  @override
-  Widget build(BuildContext context) {
-
-    final colorScheme = Theme.of(context).colorScheme;
-    final preview = habits.toList();
-
-    void _openhabit(BuildContext context, String title) {
+  void _openHabit(BuildContext context, String title) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => HabitListPage(title: title, store: habitstore),
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final preview = habits.toList();
 
     return Material(
       color: tint,
@@ -66,7 +68,7 @@ class HabitSectionCard extends StatelessWidget {
         children: [
           // Header
           InkWell(
-            onTap: () => _openhabit(context, title),
+            onTap: () => _openHabit(context, title),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Row(
@@ -130,6 +132,7 @@ class HabitSectionCard extends StatelessWidget {
                         HabitRow(
                           habitstore: habitstore,
                           habit: habit,
+                          date: date,
                           onToggle: () => onToggle(habit.id),
                         ),
                     ],
@@ -138,7 +141,7 @@ class HabitSectionCard extends StatelessWidget {
 
           // View all
           InkWell(
-            onTap: () => _openhabit(context, title),
+            onTap: () => _openHabit(context, title),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
               child: Text(
